@@ -10,8 +10,31 @@ function handleArgs() {
   });
 }
 
-function findMovie() {
-  const library = getLibrary()
+function getSearchQuery(){
+  const args = handleArgs();
+  return args[2].toLowerCase();
 }
 
-findMovie();
+function searchMovieByTitle(lib, query) {
+  return lib.filter((item, index) => {
+    const currentTile = item.title.toLowerCase();
+    return currentTile.includes(query);
+  });
+}
+
+
+function findMovieByName() {
+  const library = getLibrary();
+  const findQuery = getSearchQuery();
+  const results = searchMovieByTitle(library, findQuery);
+  
+  return results && results.length > 0 ? results : 'no match found';
+  //     ^ this conditional as big if
+  // if(results && results.length > 0) {
+  //   return results;
+  // } else {
+  //   return 'no match';
+  // }
+}
+
+console.log(findMovieByName());
