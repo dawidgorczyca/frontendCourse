@@ -10,31 +10,62 @@ function handleArgs() {
   });
 }
 
-function getSearchQuery(){
-  const args = handleArgs();
-  return args[2].toLowerCase();
+function getQueryType(){
+  const query = handleArgs();
+  return query[2];
 }
 
-function searchMovieByTitle(lib, query) {
-  return lib.filter((item, index) => {
-    const currentTile = item.title.toLowerCase();
-    return currentTile.includes(query);
-  });
+function getQuery(){
+  const lib = handleArgs();
+  return lib.slice(3);
 }
 
+function searchByTitle(lib, qItem){
+    return lib.filter( (item) => {
+      const currentTile = item.title.toLowerCase();
+      return currentTile.includes(qItem);
+    })
+}
 
-function findMovieByName() {
+function searchById(lib, qID){
+  return lib.filter( (item) => {
+    const currentTile = item.id;
+    return currentTile.includes(qID);
+  })
+}
+
+function searchByRank(lib, qRank){
+  return lib.filter( (item) => {
+    return item.rank === qRank && item.rank;
+  })
+}
+
+function findMovie(){
+  const queryArray = getQuery();
   const library = getLibrary();
-  const findQuery = getSearchQuery();
-  const results = searchMovieByTitle(library, findQuery);
-  
-  return results && results.length > 0 ? results : 'no match found';
-  //     ^ this conditional as big if
-  // if(results && results.length > 0) {
-  //   return results;
-  // } else {
-  //   return 'no match';
-  // }
+
+  switch(getQueryType() ){
+    case 'title':
+        const searchResults = queryArray.map( (singleTitle) => {
+          return searchByTitle(library, singleTitle);
+        });
+        break;
+    case 'id':
+        const searchResultsID = queryArray.map( (singleID) =>{
+          return searchById(library, singleID);
+        })
+        console.log(searchResultsID);
+    break;
+    case 'rank':
+        const searchResultsRank = queryArray.map( (singleRank) => {
+          return searchByRank(library, singleRank);
+        })
+        console.log(searchResultsRank);
+    break;
+    default:
+    console.log('Wrong parameter.');
+    break;
+  }
 }
 
-console.log(findMovieByName());
+findMovie();
