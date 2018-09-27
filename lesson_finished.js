@@ -10,57 +10,56 @@ function handleArgs() {
   });
 }
 
-function getQueryType(){
-  const query = handleArgs();
-  return query[2];
+function getQuery(type){
+  switch(type){
+    case 'consoleArg':
+    const query = handleArgs();
+    return query[2];
+    case 'user':
+    const lib = handleArgs();
+    return lib.slice(3);
+    default:
+    return;
+  }
 }
 
-function getQuery(){
-  const lib = handleArgs();
-  return lib.slice(3);
-}
-
-function searchByTitle(lib, qItem){
+function search(lib, queryType, userQuery){
+  switch(queryType){
+    case 'title':
     return lib.filter( (item) => {
       const currentTile = item.title.toLowerCase();
-      return currentTile.includes(qItem);
-    })
-}
-
-function searchById(lib, qID){
-  return lib.filter( (item) => {
-    const currentTile = item.id;
-    return currentTile.includes(qID);
-  })
-}
-
-function searchByRank(lib, qRank){
-  return lib.filter( (item) => {
-    return item.rank === qRank && item.rank;
-  })
+      return currentTile.includes(userQuery);
+  });
+    case 'id':
+    return lib.filter( (item) => {
+      const currentTile = item.id;
+      return currentTile.includes(userQuery);
+    });
+    case 'rank':
+    return lib.filter( (item) => {
+      return item.rank === userQuery && item.rank;
+    });
+  }
 }
 
 function findMovie(){
-  const queryArray = getQuery();
-  const library = getLibrary();
+  const userQuery = getQuery('user');
 
-  switch(getQueryType() ){
+  switch(getQuery('consoleArg') ){
     case 'title':
-        const searchResults = queryArray.map( (singleTitle) => {
-          return searchByTitle(library, singleTitle);
+        userQuery.map( (singleTitle) => {
+          return console.log(search(getLibrary(), getQuery('consoleArg'), singleTitle) );
         });
         break;
     case 'id':
-        const searchResultsID = queryArray.map( (singleID) =>{
-          return searchById(library, singleID);
-        })
-        console.log(searchResultsID);
+        userQuery.map( (singleID) =>{
+          return console.log(search(getLibrary(), getQuery('consoleArg'), singleID) );
+        });
     break;
     case 'rank':
-        const searchResultsRank = queryArray.map( (singleRank) => {
-          return searchByRank(library, singleRank);
-        })
-        console.log(searchResultsRank);
+        userQuery.map( (singleRank) => {
+          return console.log(search(getLibrary(),getQuery('consoleArg'), singleRank) );
+        });
     break;
     default:
     console.log('Wrong parameter.');
